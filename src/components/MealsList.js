@@ -2,23 +2,16 @@ import React, { useEffect, useState } from 'react';
 import { db } from './firebaseConfig';
 import { collection, getDocs } from 'firebase/firestore';
 
-interface Meal {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-}
-
-const MealsList: React.FC = () => {
-  const [meals, setMeals] = useState<Meal[]>([]);
+const MealsList = () => {
+  const [meals, setMeals] = useState([]);
 
   useEffect(() => {
     const fetchMeals = async () => {
       try {
         const querySnapshot = await getDocs(collection(db, 'meals'));
-        const mealsData: Meal[] = [];
+        const mealsData = [];
         querySnapshot.forEach((doc) => {
-          mealsData.push({ id: doc.id, ...doc.data() } as Meal);
+          mealsData.push({ id: doc.id, ...doc.data() });
         });
         setMeals(mealsData);
       } catch (error) {
