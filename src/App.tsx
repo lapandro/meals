@@ -1,24 +1,13 @@
-import React, { useEffect, useState } from "react";
-import { onAuthStateChanged, User } from "firebase/auth";
-import { auth } from "./firebase";
-import Login from "./components/Login";
-import MealsList from "./components/MealsList";
+import React from 'react';
+import MealsList from './MealsList';
 
-function App() {
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, currentUser => {
-      setUser(currentUser);
-      setLoading(false);
-    });
-    return unsubscribe;
-  }, []);
-
-  if (loading) return <p>جار التحقق...</p>;
-
-  return <div>{user ? <MealsList /> : <Login />}</div>;
-}
+const App: React.FC = () => {
+  return (
+    <div style={{ fontFamily: 'Arial, sans-serif', maxWidth: '600px', margin: '0 auto', padding: '20px' }}>
+      <h1 style={{ textAlign: 'center', color: '#4CAF50' }}>تطبيق وجباتي</h1>
+      <MealsList />
+    </div>
+  );
+};
 
 export default App;
