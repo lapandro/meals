@@ -1,5 +1,5 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { initializeApp } from "firebase/app";
+import { getFirestore, collection, getDocs } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBsBB8eCNAKUmWzjEDXC1DRX1n9SMoFc3U",
@@ -14,17 +14,25 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-const mealsList = document.getElementById("mealsList");
+const mealsList = document.getElementById("meals-list");
 
 async function loadMeals() {
-  const mealsCol = collection(db, "meals");
-  const mealSnapshot = await getDocs(mealsCol);
-  mealSnapshot.forEach((doc) => {
-    const meal = doc.data();
-    const li = document.createElement("li");
-    li.textContent = meal.name + (meal.description ? ` - ${meal.description}` : "");
-    mealsList.appendChild(li);
-  });
+  try {
+    const mealsCol = collection(db, "meals");
+    const mealSnapshot = await getDocs(mealsCol);
+    if (mealSnapshot.empty) {
+      mealsList.innerHTML = "<li>لا توجد وجبات حالياً.</li>";
+      return;
+    }
+    mealSnapshot.forEach((doc) => {
+      const meal = doc.data();
+      const li = document.createElement("li");
+      li.textContent = `${meal.name} — السعر: ${meal.price} — الوصف: ${meal.description || "لا يوجد وصف"}`;
+      mealsList.appendChild(li);
+    });
+  } catch (error) {
+    mealsList.innerHTML = `<li>حدث خطأ أثناء تحميل الوجبات: ${error.message}</li>`;
+  }
 }
 
 loadMeals();
